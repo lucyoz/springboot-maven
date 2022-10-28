@@ -2,11 +2,9 @@ package com.springboot.hello2.controller;
 
 import com.springboot.hello2.dao.UserDao;
 import com.springboot.hello2.domain.User;
+import com.springboot.hello2.domain.dto.UserRequestDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -20,6 +18,14 @@ public class UserController {
     @GetMapping("/")
     public String hello(){
         return "Hello World";
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<Integer> add(@RequestBody UserRequestDto userRequestDto){
+        User user = new User(userRequestDto.getId(), userRequestDto.getName(), userRequestDto.getPassword());
+        return ResponseEntity
+                .ok()
+                .body(userDao.add(user));
     }
 
     @GetMapping("/user")
