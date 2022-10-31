@@ -2,6 +2,7 @@ package com.springboot.hello2.dao;
 
 import com.springboot.hello2.domain.User;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -31,30 +32,13 @@ public class UserDao {
         return this.jdbcTemplate.update("delete from users;");
     }
 
+    RowMapper<User> rowMapper = (rs, rowNum) -> {
+        return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
+    };
+
     public User findById(String id) {
-        Map<String, String> env = System.getenv();
-        Connection c;
-        try {
-            c = dataSource.getConnection();
-
-            PreparedStatement pstmt = c.prepareStatement("SELECT * FROM users WHERE id = ?");
-            pstmt.setString(1, id);
-
-            ResultSet rs = pstmt.executeQuery();
-            User user = null;
-            if (rs.next()) {
-                user = new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
-            }
-
-            rs.close();
-            pstmt.close();
-            c.close();
-
-            if (user == null) throw new RuntimeException();
-
-            return user;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        String sql = "SELECT * FROM users WHERE id = ?";
+        return this.jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
 }

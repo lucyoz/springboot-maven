@@ -15,6 +15,9 @@ public class UserController {
         this.userDao = userDao;
     }
 
+    //@Autowired
+    //private UserDao userDao;
+
     @GetMapping("/")
     public String hello(){
         return "Hello World";
@@ -32,6 +35,16 @@ public class UserController {
     public User addAndGet(){
         userDao.add(new User("1","kwon","1234"));
         return userDao.findById("1");
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<User> get(@PathVariable String id){
+        try{
+            User user = this.userDao.findById(id);
+            return ResponseEntity.ok()
+                    .body(user);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @DeleteMapping("/user")
