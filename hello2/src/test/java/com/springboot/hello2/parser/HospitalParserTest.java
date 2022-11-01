@@ -1,5 +1,6 @@
 package com.springboot.hello2.parser;
 
+import com.springboot.hello2.dao.HospitalDao;
 import com.springboot.hello2.domain.Hospital;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,21 @@ class HospitalParserTest {
 
     @Autowired      //주로 Test에서 & 서비스 코드는 final과 Constructor를 씁니다. 이렇게 해도 Spring이 DI를 해준다.
     ReadLineContext<Hospital> hospitalReadLineContext;
+
+    //factory도 없는데 어떻게 DI가 되나요?
+    // @SrpingBootApplication ---> @ComponentScan에서
+    // @Component를 스프링부트가 다 빈으로 등록한다.
+    @Autowired
+    HospitalDao hospitalDao;
+
+
+    @Test
+    @DisplayName("Hospital이 insert가 잘 되는지")
+    void add(){
+        HospitalParser hp = new HospitalParser();
+        Hospital hospital = hp.parse(line1);
+        hospitalDao.add(hospital);
+    }
 
     @Test
     @DisplayName("10만건 이상 데이터가 파싱되는지")
