@@ -36,6 +36,8 @@ class HospitalParserTest {
         HospitalParser hp = new HospitalParser();
         Hospital hospital = hp.parse(line1);
         hospitalDao.add(hospital);
+        assertEquals(3, hospitalDao.getCount());
+
     }
 
     @Test
