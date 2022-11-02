@@ -20,6 +20,7 @@ public class HospitalService {
         this.hospitalDao = hospitalDao;
     }
 
+    //트랜잭션 적용
     @Transactional
     public int insertLargeVolumnHospitalData(String filename){
         int cnt = 0;
