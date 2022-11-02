@@ -2,6 +2,7 @@ package com.springboot.hello2.parser;
 
 import com.springboot.hello2.dao.HospitalDao;
 import com.springboot.hello2.domain.Hospital;
+import com.springboot.hello2.service.HospitalService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ class HospitalParserTest {
     @Autowired
     HospitalDao hospitalDao;
 
+    @Autowired
+    HospitalService hospitalService;
 
     @Test
     @DisplayName("Hospital이 insert가 잘 되고 select도 잘되는지")
@@ -65,13 +68,14 @@ class HospitalParserTest {
     @Test
     @DisplayName("10만건 이상 데이터가 파싱되는지")
     void oneHundreadThousandRows() throws IOException {
+        hospitalDao.deleteAll();
         String filename="D:\\Lion\\fulldata_01_01_02_P_의원_utf8.csv";
-        List<Hospital> hospitalList = hospitalReadLineContext.readByLine(filename);
-        assertTrue(hospitalList.size()>1000);
-        assertTrue(hospitalList.size()>10000);
+        int cnt = this.hospitalService.insertLargeVolumnHospitalData(filename);
+        assertTrue(cnt>1000);
+        assertTrue(cnt>10000);
 
         for (int i = 0; i < 10; i++) {
-            System.out.println(hospitalList.get(i).getHospitalName());
+            System.out.printf("파싱된 데이터 개수: %d", cnt);
         }
     }
 
